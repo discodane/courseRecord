@@ -1,21 +1,20 @@
-//
-//  ContentView.swift
-//  courseRecord
-//
-//  Created by Dane Erickson on 4/27/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var store = Store()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            SpotListView()
+                .navigationDestination(for: Spot.self) { spot in
+                    SpotDetailView(spot: spot)
+                }
+                .navigationDestination(for: Event.self) { event in
+                    EventDetailView(event: event)
+                }
         }
-        .padding()
+        .tint(AppTheme.primary)
+        .environment(store)
     }
 }
 
