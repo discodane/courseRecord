@@ -7,7 +7,15 @@ struct Record: Identifiable, Codable, Hashable {
     var userName: String
     var date: Date
     var note: String
+    var isVerified: Bool
+    var endorsements: [String]
     var createdAt: Date
+
+    var endorsementCount: Int { endorsements.count }
+
+    func isEndorsedBy(_ name: String) -> Bool {
+        endorsements.contains(where: { $0.lowercased() == name.lowercased() })
+    }
 
     init(
         id: UUID = UUID(),
@@ -16,6 +24,8 @@ struct Record: Identifiable, Codable, Hashable {
         userName: String,
         date: Date = .now,
         note: String = "",
+        isVerified: Bool = false,
+        endorsements: [String] = [],
         createdAt: Date = .now
     ) {
         self.id = id
@@ -24,6 +34,8 @@ struct Record: Identifiable, Codable, Hashable {
         self.userName = userName
         self.date = date
         self.note = note
+        self.isVerified = isVerified
+        self.endorsements = endorsements
         self.createdAt = createdAt
     }
 }
@@ -59,30 +71,35 @@ extension Record {
         Record(
             eventID: Event.preview.id,
             value: 7.5,
-            userName: "dane"
+            userName: "dane",
+            isVerified: true
         ),
         Record(
             eventID: Event.preview.id,
             value: 8.25,
             userName: "alex",
-            date: .now.addingTimeInterval(-86400)
+            date: .now.addingTimeInterval(-86400),
+            isVerified: true
         ),
         Record(
             eventID: Event.preview.id,
             value: 6.75,
             userName: "jordan",
             date: .now.addingTimeInterval(-172800),
-            note: "New personal best!"
+            note: "New personal best!",
+            isVerified: true
         ),
         Record(
             eventID: Event.previews[1].id,
             value: 22,
-            userName: "dane"
+            userName: "dane",
+            endorsements: ["alex", "jordan"]
         ),
         Record(
             eventID: Event.previews[1].id,
             value: 18,
-            userName: "alex"
+            userName: "alex",
+            endorsements: ["dane"]
         ),
     ]
 }

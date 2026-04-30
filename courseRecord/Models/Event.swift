@@ -1,4 +1,5 @@
 import Foundation
+import CoreLocation
 
 struct Event: Identifiable, Codable, Hashable {
     var id: UUID
@@ -7,8 +8,19 @@ struct Event: Identifiable, Codable, Hashable {
     var description: String
     var unit: RecordUnit
     var sortOrder: SortOrder
+    var startLatitude: Double?
+    var startLongitude: Double?
     var createdBy: String
     var createdAt: Date
+
+    var isVerifiable: Bool {
+        startLatitude != nil && startLongitude != nil
+    }
+
+    var startCoordinate: CLLocationCoordinate2D? {
+        guard let lat = startLatitude, let lng = startLongitude else { return nil }
+        return CLLocationCoordinate2D(latitude: lat, longitude: lng)
+    }
 
     init(
         id: UUID = UUID(),
@@ -17,6 +29,8 @@ struct Event: Identifiable, Codable, Hashable {
         description: String = "",
         unit: RecordUnit,
         sortOrder: SortOrder,
+        startLatitude: Double? = nil,
+        startLongitude: Double? = nil,
         createdBy: String,
         createdAt: Date = .now
     ) {
@@ -26,6 +40,8 @@ struct Event: Identifiable, Codable, Hashable {
         self.description = description
         self.unit = unit
         self.sortOrder = sortOrder
+        self.startLatitude = startLatitude
+        self.startLongitude = startLongitude
         self.createdBy = createdBy
         self.createdAt = createdAt
     }
@@ -74,6 +90,8 @@ extension Event {
         description: "Full loop starting and ending at the main entrance",
         unit: .minutes,
         sortOrder: .ascending,
+        startLatitude: 40.8012,
+        startLongitude: -73.9714,
         createdBy: "dane"
     )
 

@@ -24,6 +24,13 @@ class Store {
         records.append(record)
     }
 
+    func endorseRecord(_ record: Record, by name: String) {
+        guard let index = records.firstIndex(where: { $0.id == record.id }) else { return }
+        if !records[index].isEndorsedBy(name) {
+            records[index].endorsements.append(name)
+        }
+    }
+
     func deleteSpot(_ spot: Spot) {
         let eventIDs = events.filter { $0.spotID == spot.id }.map(\.id)
         records.removeAll { eventIDs.contains($0.eventID) }

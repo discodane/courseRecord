@@ -10,6 +10,7 @@ struct AddEventView: View {
     @State private var description = ""
     @State private var unit: RecordUnit = .minutes
     @State private var sortOrder: SortOrder = .ascending
+    @State private var isVerifiable = false
 
     private var isValid: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty
@@ -80,6 +81,8 @@ struct AddEventView: View {
                                 }
                             }
                         }
+
+                        verificationToggle
                     }
                 }
                 .padding(.horizontal)
@@ -99,6 +102,8 @@ struct AddEventView: View {
                             description: description.trimmingCharacters(in: .whitespaces),
                             unit: unit,
                             sortOrder: sortOrder,
+                            startLatitude: isVerifiable ? spot.latitude : nil,
+                            startLongitude: isVerifiable ? spot.longitude : nil,
                             createdBy: "me"
                         )
                         store.addEvent(event)
@@ -107,6 +112,37 @@ struct AddEventView: View {
                     .fontWeight(.semibold)
                     .disabled(!isValid)
                 }
+            }
+        }
+    }
+
+    private var verificationToggle: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle(isOn: $isVerifiable) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("GPS Verification")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text("Require users to be at the spot to start and finish a timed attempt")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .tint(AppTheme.primary)
+            .padding(14)
+            .background(AppTheme.cardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .shadow(color: AppTheme.cardShadow, radius: 4, x: 0, y: 1)
+
+            if isVerifiable {
+                HStack(spacing: 6) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(AppTheme.primary)
+                    Text("The spot's location will be used as the start/finish point.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.leading, 4)
             }
         }
     }
